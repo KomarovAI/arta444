@@ -42,7 +42,7 @@ public class ClientConnect implements Runnable {
     @Override
     public void run() {
         try {
-            InetAddress serverAddr = InetAddress.getByName("192.168.1.100");
+            InetAddress serverAddr = InetAddress.getByName("10.0.2.2");
             Socket socket = new Socket(serverAddr, 4444);
             PrintWriter out = new
                     PrintWriter(socket.getOutputStream(),true);

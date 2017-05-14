@@ -14,6 +14,6 @@ public class Server extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_serv);
 
-
+        new Thread(new ClientServer()).start();
     }
 }
