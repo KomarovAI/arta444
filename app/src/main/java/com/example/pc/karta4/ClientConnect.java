@@ -12,7 +12,7 @@ import java.net.Socket;
  */
 
 public class ClientConnect implements Runnable {
-    String str;
+    String a;
     String pass;
     String mac;
     boolean gg = true;
@@ -23,30 +23,23 @@ public class ClientConnect implements Runnable {
         this.mac = mac;
     }
 
-//    public ClientConnect(String green, boolean b, String macAddr) {
-//        str = green;
-//        gg = b;
-//        this.mac = macAddr;
-//    }
-//
-//    public ClientConnect(String green, boolean b, String macAddr) {
-//        str = green;
-//        gg = b;
-//        this.mac = macAddr;
-//    }
-
-    public ClientConnect(String red) {
-        str =red;
+    public ClientConnect(String green, boolean b, String macAddr) {
+        a = green;
+        gg = b;
+        this.mac = macAddr;
     }
 
     @Override
     public void run() {
         try {
-            InetAddress serverAddr = InetAddress.getByName("10.0.2.2");
+            InetAddress serverAddr = InetAddress.getByName("192.168.1.100");
             Socket socket = new Socket(serverAddr, 4444);
             PrintWriter out = new
                     PrintWriter(socket.getOutputStream(),true);
-                out.println(str);
+            if (gg) {
+                out.println(mac+pass);
+                gg=false;
+            } else  out.println(mac+a);
 
             Thread.interrupted();
         } catch (IOException e) {
