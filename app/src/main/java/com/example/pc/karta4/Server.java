@@ -228,6 +228,7 @@ public class Strngs extends Thread {
 
         @Override
         protected Void doInBackground(Void... params) {
+
             return null;
         }
 
