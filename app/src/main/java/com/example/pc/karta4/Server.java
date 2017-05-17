@@ -35,7 +35,6 @@ public class Server extends Activity {
     String JudF3;
 
     int count = 0;
-    boolean gg = false;
 
     String mac1;
     String mac2;
@@ -69,6 +68,14 @@ public class Server extends Activity {
         b1 = (ImageView) findViewById(R.id.imageView2);
         b2 = (ImageView) findViewById(R.id.imageView4);
         b3 = (ImageView) findViewById(R.id.imageView3);
+        b1.setBackgroundColor(Color.WHITE);
+
+        try {
+            servers = new ServerSocket(4444);
+        } catch (IOException e1) {
+            System.out.println("Couldn't listen to port 4444");
+            System.exit(-1);
+        }
 
         mt = new ClientServer();
        // new Thread(new Strngs()).start();
@@ -123,15 +130,30 @@ public class Server extends Activity {
         alertDialog.show();
     }
 
-    public class Strngs extends Thread {
-        public void run() {
-            try {
-                servers = new ServerSocket(4444);
-            } catch (IOException e1) {
-                System.out.println("Couldn't listen to port 4444");
-                System.exit(-1);
-            }
+    public class ClientServer extends AsyncTask {
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+
+
             while (true) {
+
+                if (Jud1 && Jud2 && Jud3) {
+                    Object object[] = { "Мамку в кино водил!" };
+                    publishProgress(object);
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Jud1 = false;
+                    Jud2 = false;
+                    Jud3 = false;
+                    JudF1 = null;
+                    JudF2 = null;
+                    JudF3 = null;
+                    publishProgress(object);
+                }
                 try {
                     //    System.out.print("Waiting for a client...");
                     fromclient = servers.accept();
@@ -144,10 +166,6 @@ public class Server extends Activity {
                 try {
                     in = new BufferedReader(new
                             InputStreamReader(fromclient.getInputStream()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
                     input = in.readLine();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -216,111 +234,10 @@ public class Server extends Activity {
                     }
 
                 }
+
             }
         }
-    }
 
-    public class ClientServer extends AsyncTask {
-
-        @Override
-        protected Object doInBackground(Object[] params) {
-
-            try {
-                servers = new ServerSocket(4444);
-            } catch (IOException e1) {
-                System.out.println("Couldn't listen to port 4444");
-                System.exit(-1);
-            }
-            while (true) {
-                try {
-                    //    System.out.print("Waiting for a client...");
-                    fromclient = servers.accept();
-                    System.out.println("Client connected");
-                } catch (IOException e) {
-                    System.out.println("Can't accept");
-                    System.exit(-1);
-                }
-
-                try {
-                    in = new BufferedReader(new
-                            InputStreamReader(fromclient.getInputStream()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    while ((input = in.readLine()) != null) {
-                        Object object[] = { input };
-                        if (count != 3) {
-                            if (pas1.equals(input.substring(17))) {
-                                System.out.println("Пароль верен!");
-                                mac1 = input.substring(0, 17);
-                                count++;
-                            } else if (pas2.equals(input.substring(17))) {
-                                System.out.println("Пароль верен!");
-                                mac2 = input.substring(0, 17);
-                                count++;
-                            } else if (pas3.equals(input.substring(17))) {
-                                System.out.println("Пароль верен!");
-                                mac3 = input.substring(0, 17);
-                                count++;
-                            }
-                        } else {
-                            String mac = input.substring(0, 17);
-                            System.out.println(mac);
-                            input = input.substring(17);
-                            System.out.println(input);
-                            if (mac.equals(mac1)) {
-                                if (red.equals(input) && !Jud1) {
-                                    JudF1 = red;
-                                    Jud1 = true;
-                                } else if (blue.equals(input) && !Jud1) {
-                                    JudF1 = blue;
-                                    Jud1 = true;
-                                } else if (yellow.equals(input) && !Jud1) {
-                                    JudF1 = yellow;
-                                    Jud1 = true;
-                                } else if (green.equals(input) && !Jud1) {
-                                    JudF1 = green;
-                                    Jud1 = true;
-                                }
-                            } else if (mac.equals(mac2)) {
-                                if (red.equals(input) && !Jud2) {
-                                    JudF2 = red;
-                                    Jud2 = true;
-                                } else if (blue.equals(input) && !Jud2) {
-                                    JudF2 = blue;
-                                    Jud2 = true;
-                                } else if (yellow.equals(input) && !Jud2) {
-                                    JudF2 = yellow;
-                                    Jud2 = true;
-                                } else if (green.equals(input) && !Jud2) {
-                                    JudF2 = green;
-                                    Jud2 = true;
-                                }
-                            } else if (mac.equals(mac3)) {
-                                if (red.equals(input) && !Jud3) {
-                                    JudF3 = red;
-                                    Jud3 = true;
-                                } else if (blue.equals(input) && !Jud3) {
-                                    JudF3 = blue;
-                                    Jud3 = true;
-                                } else if (yellow.equals(input) && !Jud3) {
-                                    JudF3 = yellow;
-                                    Jud3 = true;
-                                } else if (green.equals(input) && !Jud3) {
-                                    JudF3 = green;
-                                    Jud3 = true;
-                                }
-                            }
-
-                        }
-                        publishProgress(object);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
 
 
         protected void onProgressUpdate(Object[] values) {
@@ -353,25 +270,13 @@ public class Server extends Activity {
                     } else if (JudF3.equals("green")) {
                         b3.setBackgroundColor(Color.WHITE);
                     }
-                    try {
-                        Thread.sleep(15000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    Jud1 = false;
-                    Jud2 = false;
-                    Jud3 = false;
-                    JudF1 = null;
-                    JudF2 = null;
-                    JudF3 = null;
+                } else {
                     b1.setBackgroundColor(Color.BLACK);
                     b2.setBackgroundColor(Color.BLACK);
                     b3.setBackgroundColor(Color.BLACK);
                 }
             }
+
+            }
         }
-
-
-    }
 
