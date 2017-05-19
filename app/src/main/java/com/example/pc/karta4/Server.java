@@ -4,13 +4,27 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.support.annotation.RequiresApi;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,11 +38,14 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class Server extends Activity {
+    int width;
+    int height;
     ClientServer mt;
-
     boolean Jud1 = false;
     boolean Jud2 = false;
     boolean Jud3 = false;
+    boolean timer = false;
+    int second=10000;
 
     String JudF1;
     String JudF2;
@@ -39,10 +56,15 @@ public class Server extends Activity {
     String mac1;
     String mac2;
     String mac3;
+    String mac4;
 
     String pas1;
     String pas2;
     String pas3;
+    String pas4;
+
+    Object object[] = { "" };
+
 
 
     String red = "red";
@@ -55,20 +77,32 @@ public class Server extends Activity {
     ServerSocket servers = null;
     Socket fromclient = null;
     String input;
-    ImageView b1;
-    ImageView b2;
-    ImageView b3;
+//    ImageView b1;
+//    ImageView b2;
+//    ImageView b3;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_serv);
-        for (int i = 1; i < 4; i++) {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        setContentView(new DrawView(this));
+
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        width = size.x;  // deprecated
+        height = size.y;  // deprecated
+        for (int i = 1; i < 5; i++) {
             setPassword(i);
         }
-        b1 = (ImageView) findViewById(R.id.imageView2);
-        b2 = (ImageView) findViewById(R.id.imageView4);
-        b3 = (ImageView) findViewById(R.id.imageView3);
-        b1.setBackgroundColor(Color.WHITE);
+
+
+
+
+//        b1 = (ImageView) findViewById(R.id.imageView5);
+//        b2 = (ImageView) findViewById(R.id.imageView4);
+//        b3 = (ImageView) findViewById(R.id.imageView6);
+//        b1.setBackgroundColor(Color.WHITE);
 
         try {
             servers = new ServerSocket(4444);
@@ -113,6 +147,8 @@ public class Server extends Activity {
                                     pas2 = String.valueOf(userInput.getText());
                                 } else if (i == 3) {
                                     pas3 = String.valueOf(userInput.getText());
+                                } else if (i==4) {
+                                    pas4 = String.valueOf(userInput.getText());
                                 }
                             }
                         })
@@ -130,6 +166,115 @@ public class Server extends Activity {
         alertDialog.show();
     }
 
+    class DrawView extends View {
+
+        Paint p;
+        Rect rect;
+
+        public DrawView(Context context) {
+            super(context);
+            p = new Paint();
+            rect = new Rect();
+        }
+
+        public DrawView(ClientServer clientServer) {
+            super(context);
+            p = new Paint();
+            rect = new Rect();
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            // заливка канвы цветом
+            canvas.drawRGB( 0, 0, 0);
+
+            // настройка кисти
+            // красный цвет
+            // толщина линии = 10
+            p.setStrokeWidth(10);
+
+                            if (Jud1 && Jud2 && Jud3) {
+                    if (JudF1.equals("red")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/6, height/3, width/6, p);
+                        canvas.drawCircle(width/6, height-height/5, width/12, p);
+                    } else if (JudF1.equals("blue")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/6, height/3, width/6, p);
+                        p.setColor(Color.BLUE);
+                        canvas.drawCircle(width/6, height-height/5, width/12, p);
+                    } else if (JudF1.equals("yellow")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/6, height/3, width/6, p);
+                        p.setColor(Color.YELLOW);
+                        canvas.drawCircle(width/6, height-height/5, width/12, p);
+                    } else if (JudF1.equals("green")) {
+                        p.setColor(Color.WHITE);
+                        canvas.drawCircle(width/6, height/3, width/6, p);
+                    } else if (JudF1.equals("red2")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/6, height/3, width/6, p);
+                    }
+                    if (JudF2.equals("red")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/2, height/3, width/6, p);
+                        canvas.drawCircle(width/2, height-height/5, width/12, p);
+                    } else if (JudF2.equals("blue")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/2, height/3, width/6, p);
+                        p.setColor(Color.BLUE);
+                        canvas.drawCircle(width/2, height-height/5, width/12, p);
+                    } else if (JudF2.equals("yellow")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/2, height/3, width/6, p);
+                        p.setColor(Color.YELLOW);
+                        canvas.drawCircle(width/2, height-height/5, width/12, p);
+                    } else if (JudF2.equals("green")) {
+                        p.setColor(Color.WHITE);
+                        canvas.drawCircle(width/2, height/3, width/6, p);
+                    } else if (JudF2.equals("red2")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width/2, height/3, width/6, p);
+                    }
+                    if (JudF3.equals("red")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width-width/6, height/3, width/6, p);
+                        canvas.drawCircle(width-width/6, height-height/5, width/12, p);
+                    } else if (JudF3.equals("blue")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width-width/6, height/3, width/6, p);
+                        p.setColor(Color.BLUE);
+                        canvas.drawCircle(width-width/6, height-height/5, width/12, p);
+                    } else if (JudF3.equals("yellow")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width-width/6, height/3, width/6, p);
+                        p.setColor(Color.YELLOW);
+                        canvas.drawCircle(width-width/6, height-height/5, width/12, p);
+                    } else if (JudF3.equals("green")) {
+                        p.setColor(Color.WHITE);
+                        canvas.drawCircle(width-width/6, height/3, width/6, p);
+                    } else if (JudF3.equals("red2")) {
+                        p.setColor(Color.RED);
+                        canvas.drawCircle(width-width/6, height/3, width/6, p);
+                    }
+                } else {
+                                p.setColor(Color.BLACK);
+                                canvas.drawCircle(width/6, height/3, width/6, p);
+                                canvas.drawCircle(width/2, height/3, width/6, p);
+                                canvas.drawCircle(width-width/6, height/3, width/6, p);
+                }
+
+//            // рисуем круг с центром в (100,200), радиус = 50
+//
+//
+//            canvas.drawCircle(width/6, height-height/5, width/12, p);
+//            canvas.drawCircle(width/2, height-height/5, width/12, p);
+//            canvas.drawCircle(width-width/6, height-height/5, width/12, p);
+
+        }
+
+    }
+
     public class ClientServer extends AsyncTask {
 
         @Override
@@ -139,7 +284,6 @@ public class Server extends Activity {
             while (true) {
 
                 if (Jud1 && Jud2 && Jud3) {
-                    Object object[] = { "Мамку в кино водил!" };
                     publishProgress(object);
                     try {
                         Thread.sleep(15000);
@@ -170,7 +314,7 @@ public class Server extends Activity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                if (count != 3) {
+                if (count != 4) {
                     if (pas1.equals(input.substring(17))) {
                         System.out.println("Пароль верен!");
                         mac1 = input.substring(0, 17);
@@ -183,6 +327,9 @@ public class Server extends Activity {
                         System.out.println("Пароль верен!");
                         mac3 = input.substring(0, 17);
                         count++;
+                    } else if (pas4.equals(input.substring(17))) {
+                        mac4 = input.substring(0,17);
+                        count++;
                     }
                 } else {
                     String mac = input.substring(0, 17);
@@ -190,6 +337,7 @@ public class Server extends Activity {
                     input = input.substring(17);
                     System.out.println(input);
                     if (mac.equals(mac1)) {
+                        timer=false;
                         if (red.equals(input) && !Jud1) {
                             JudF1 = red;
                             Jud1 = true;
@@ -202,8 +350,12 @@ public class Server extends Activity {
                         } else if (green.equals(input) && !Jud1) {
                             JudF1 = green;
                             Jud1 = true;
+                        } else if (input.equals("red2") && !Jud1) {
+                            JudF1 = "red2";
+                            Jud1 = true;
                         }
-                    } else if (mac.equals(mac2)) {
+                    }  if (mac.equals(mac2)) {
+                        timer=false;
                         if (red.equals(input) && !Jud2) {
                             JudF2 = red;
                             Jud2 = true;
@@ -216,8 +368,12 @@ public class Server extends Activity {
                         } else if (green.equals(input) && !Jud2) {
                             JudF2 = green;
                             Jud2 = true;
+                        }else if (input.equals("red2") && !Jud2) {
+                            JudF2 = "red2";
+                            Jud2 = true;
                         }
-                    } else if (mac.equals(mac3)) {
+                    }  if (mac.equals(mac3)) {
+                        timer=false;
                         if (red.equals(input) && !Jud3) {
                             JudF3 = red;
                             Jud3 = true;
@@ -230,7 +386,14 @@ public class Server extends Activity {
                         } else if (green.equals(input) && !Jud3) {
                             JudF3 = green;
                             Jud3 = true;
+                        } else if (input.equals("red2") && !Jud3) {
+                            JudF3 = "red2";
+                            Jud3 = true;
                         }
+                    }  if (mac.equals(mac4)) {
+                        second = Integer.parseInt(input);
+                        timer = true;
+                        publishProgress(object);
                     }
 
                 }
@@ -239,43 +402,33 @@ public class Server extends Activity {
         }
 
 
-
         protected void onProgressUpdate(Object[] values) {
             super.onProgressUpdate(values);
-                if (Jud1 && Jud2 && Jud3) {
-                    if (JudF1.equals("red")) {
-                        b1.setBackgroundColor(Color.RED);
-                    } else if (JudF1.equals("blue")) {
-                        b1.setBackgroundColor(Color.BLUE);
-                    } else if (JudF1.equals("yellow")) {
-                        b1.setBackgroundColor(Color.YELLOW);
-                    } else if (JudF1.equals("green")) {
-                        b1.setBackgroundColor(Color.WHITE);
+
+            if (timer) {
+                setContentView(R.layout.timer_nagib);
+                final TextView mTextField = (TextView) findViewById(R.id.textView5);
+                mTextField.setTextSize(height/3);
+                final CountDownTimer cT =  new CountDownTimer(second*1000, 1000) {
+
+                    public void onTick(long millisUntilFinished) {
+
+
+                        String v = String.format("%02d", millisUntilFinished/60000);
+                        int va = (int)( (millisUntilFinished%60000)/1000);
+                        mTextField.setText(v+":"+String.format("%02d",va));
                     }
-                    if (JudF2.equals("red")) {
-                        b2.setBackgroundColor(Color.RED);
-                    } else if (JudF2.equals("blue")) {
-                        b2.setBackgroundColor(Color.BLUE);
-                    } else if (JudF2.equals("yellow")) {
-                        b2.setBackgroundColor(Color.YELLOW);
-                    } else if (JudF2.equals("green")) {
-                        b2.setBackgroundColor(Color.WHITE);
+
+                    public void onFinish() {
+                        mTextField.setTextColor(Color.RED);
+                        mTextField.setText("00:00");
                     }
-                    if (JudF3.equals("red")) {
-                        b3.setBackgroundColor(Color.RED);
-                    } else if (JudF3.equals("blue")) {
-                        b3.setBackgroundColor(Color.BLUE);
-                    } else if (JudF3.equals("yellow")) {
-                        b3.setBackgroundColor(Color.YELLOW);
-                    } else if (JudF3.equals("green")) {
-                        b3.setBackgroundColor(Color.WHITE);
-                    }
-                } else {
-                    b1.setBackgroundColor(Color.BLACK);
-                    b2.setBackgroundColor(Color.BLACK);
-                    b3.setBackgroundColor(Color.BLACK);
-                }
+                };
+                cT.start();
+            } else {
+                setContentView(new DrawView(this));
             }
+        }
 
             }
         }

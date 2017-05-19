@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,6 +27,7 @@ public class Jurdge extends Activity {
     final Context context = this;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.jurdge);
 
         setPassword();
@@ -50,6 +53,12 @@ public class Jurdge extends Activity {
                     //tvOut.setText("Нажата кнопка Кансель!");
                     case R.id.button9:
                         new Thread(new ClientConnect("yellow", false, getMacAddr())).start();
+                        break;
+                    case R.id.button8:
+                        new Thread(new ClientConnect("green", false, getMacAddr())).start();
+                        break;
+                    case R.id.button12:
+                        new Thread(new ClientConnect("red2",false,getMacAddr())).start();
                         break;
                 }
             }

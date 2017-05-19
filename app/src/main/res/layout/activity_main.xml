@@ -14,21 +14,22 @@
 
             <Button
                 android:id="@+id/button6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Клиент"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true" />
+                android:text="Клиент" />
 
             <Button
                 android:id="@+id/button7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Сервер"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
                 android:layout_alignBottom="@+id/button6"
                 android:layout_alignLeft="@+id/button6"
                 android:layout_alignStart="@+id/button6"
-                android:layout_marginBottom="48dp" />
+                android:layout_marginBottom="48dp"
+                android:text="Сервер" />
+
         </RelativeLayout>
     </FrameLayout>
 </LinearLayout>
